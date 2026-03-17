@@ -7,6 +7,9 @@ import { Route, Routes } from "react-router-dom";
 import Generator from "./pages/Generator";
 import Result from "./pages/Result";
 import MyGeneration from "./pages/MyGeneration";
+import Community from "./pages/Community";
+import Plans from "./pages/Plans";
+import Loading from "./pages/Loading";
 
 function App() {
   return (
@@ -19,7 +22,9 @@ function App() {
         <Route path="/generate" element={<Generator />} />
         <Route path="/result/:projectId" element={<Result />} />
         <Route path="/my-generation"  element={<MyGeneration/>} />
-        <Route path="/my-generation"  element={<MyGeneration/>} />
+        <Route path="/community"  element={<Community/>} />
+        <Route path="/plans"  element={<Plans/>} />
+        <Route path="/loading"  element={<Loading/>} />
       </Routes>
 
       <Footer />
