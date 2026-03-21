@@ -37,6 +37,7 @@ export const assets = {
 export const dummyGenerations = [
     {
         id: 'gen_1',
+        name:'Trolly Bag Ad',
         aspectRatio: '9:16',
         productDescription: 'Sky Colored Trolly Bag',
         productName: 'Trolly Bag',
@@ -53,6 +54,7 @@ export const dummyGenerations = [
     },
     {
         id: 'gen_2',
+        name:'Sneakers Ad',
         aspectRatio: '16:9',
         productDescription: 'Stylish White Sneakers',
         productName: 'Sneakers',
@@ -69,6 +71,7 @@ export const dummyGenerations = [
     },
     {
         id: 'gen_3',
+        name:'Polaroid Camera Ad',
         aspectRatio: '9:16',
         productDescription: 'Classic Polaroid Camera',
         productName: 'Polaroid Camera',
@@ -85,6 +88,7 @@ export const dummyGenerations = [
     },
     {
         id: 'gen_4',
+        name:'Headphones Ad',
         aspectRatio: '16:9',
         productDescription: 'Modern Wireless Headphones',
         productName: 'Headphones',
@@ -101,6 +105,7 @@ export const dummyGenerations = [
     },
     {
         id: 'gen_5',
+        name:'Polaroid Camera Ad',
         aspectRatio: '9:16',
         productDescription: 'Classic Polaroid Camera',
         productName: 'Polaroid Camera',
@@ -116,7 +121,9 @@ export const dummyGenerations = [
         updatedAt: '',
     },
     {
+
         id: 'gen_6',
+        name:'Headphones Ad',
         aspectRatio: '1:1',
         productDescription: 'Modern Wireless Headphones',
         productName: 'Headphones',
@@ -133,6 +140,7 @@ export const dummyGenerations = [
     },
     {
         id: 'gen_7',
+        name:'Polaroid Camera Ad',
         aspectRatio: '9:16',
         productDescription: 'Classic Polaroid Camera',
         productName: 'Polaroid Camera',
@@ -149,6 +157,7 @@ export const dummyGenerations = [
     },
     {
         id: 'gen_8',
+        name:'Headphones Ad',
         aspectRatio: '1:1',
         productDescription: 'Modern Wireless Headphones',
         productName: 'Headphones',
