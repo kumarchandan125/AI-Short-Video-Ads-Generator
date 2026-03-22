@@ -34,3 +34,4 @@ coverage/
 # Optional: temporary files
 tmp/
 temp/
+/generated/prisma
