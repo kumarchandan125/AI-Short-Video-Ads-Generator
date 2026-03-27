@@ -26,7 +26,7 @@ const clerkWebhooks = async (req: Request, res: Response) => {
             id: data.id,
           },
           data: {
-            email: data?.email_email_addresses[0]?.email_address,
+            email: data?.email_addresses[0]?.email_address,
             name: data?.first_name + " " + data?.last_name,
             image: data?.image_url,
           },
