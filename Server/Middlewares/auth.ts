@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import * as Sentry from "@sentry/node"
 
 export const protect = async (
   req: Request,
@@ -15,8 +16,9 @@ export const protect = async (
     }
     next();
   } catch (error: any) {
+    Sentry.captureException(error);
     res.status(401).json({
-      message: "Unauthorized",
+      message: error.code || error.message,
     });
   }
 };

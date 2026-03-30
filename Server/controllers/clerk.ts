@@ -1,7 +1,7 @@
 import { verifyWebhook } from "@clerk/express/webhooks";
-
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma.js";
+import * as Sentry from "@sentry/node"
 
 const clerkWebhooks = async (req: Request, res: Response) => {
   try {
@@ -19,7 +19,9 @@ const clerkWebhooks = async (req: Request, res: Response) => {
             image: data?.image_url,
           },
         });
+        break;
       }
+
       case "user.updated": {
         await prisma.user.update({
           where: {
@@ -31,6 +33,7 @@ const clerkWebhooks = async (req: Request, res: Response) => {
             image: data?.image_url,
           },
         });
+        break;
       }
 
       case "user.deleted": {
@@ -39,6 +42,7 @@ const clerkWebhooks = async (req: Request, res: Response) => {
             id: data.id,
           },
         });
+        break;
       }
 
       case "paymentAttempt.updated": {
@@ -70,13 +74,13 @@ const clerkWebhooks = async (req: Request, res: Response) => {
         break;
       }
 
-      default: {
+      default:
         break;
-      }
     }
     res.json({ message: "Webhook received successfully :" + type });
   } catch (error: any) {
-    res.status(500).json({ message: "Internal Server Error" });
+    Sentry.captureException(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
