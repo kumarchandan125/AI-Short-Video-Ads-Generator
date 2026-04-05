@@ -19,7 +19,7 @@ export const getUserCredits = async (req: Request, res: Response) => {
       },
     });
     res.json({
-      credits: user?.credits,
+      credits: user ? user.credits : 0,
     });
   } catch (error: any) {
     Sentry.captureException(error);
