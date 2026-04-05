@@ -10,7 +10,12 @@ import upload from "../config/multer.js";
 
 const projectRouter = express.Router();
 
-projectRouter.post("/create",upload.array('images',2), protect, createProject);
+projectRouter.post(
+  "/create",
+  upload.array("images", 2),
+  protect,
+  createProject,
+);
 projectRouter.post("/create-video", protect, createVideo);
 projectRouter.get("/published", getAllPublishedProjects);
 projectRouter.delete("/:projectId", protect, deleteProject);

@@ -291,76 +291,23 @@ export const createVideo = async (req: Request, res: Response) => {
       },
     });
 
-    const generationConfig: GenerateContentConfig = {
-      maxOutputTokens: 32768,
-      temperature: 1,
-      topP: 0.95,
-      responseModalities: ["VIDEO"],
-      videoConfig: {
-        aspectRatio: project.aspectRatio || "9:16",
-      },
-      safetySettings: [
-        {
-          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-          threshold: HarmBlockThreshold.OFF,
-        },
-        {
-          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-          threshold: HarmBlockThreshold.OFF,
-        },
-        {
-          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-          threshold: HarmBlockThreshold.OFF,
-        },
-        {
-          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-          threshold: HarmBlockThreshold.OFF,
-        },
-      ],
-    };
-    const response: any = await ai.models.generateContent({
-      model,
-      contents: [
-        {
-          inlineData: {
-            data: Buffer.from(project.generatedImage).toString("base64"),
-            mimeType: "image/png",
-          },
-        },
-        {
-          text: `Create a short video ad for the product in the image. The video should be ${project.targetLength} seconds long and should be in ${project.aspectRatio} aspect ratio. The video should be in ${project.userPrompt} style.`,
-        },
-      ],
-      config: generationConfig,
-    });
-    if (!response?.candidates?.[0].content?.parts) {
-      throw new Error("Unexpected response");
-    }
-    const parts = response.candidates[0].content.parts;
-    let finalBuffer: Buffer | null = null;
-    for (const part of parts) {
-      if (part.inlineData) {
-        finalBuffer = Buffer.from(part.inlineData.data, "base64");
-      }
-    }
-    if (!finalBuffer) {
-      throw new Error("Failed to generate video");
-    }
-    const base64Image = `data:image/png;base64,${finalBuffer.toString("base64")}`;
-    const uploadedResult = await cloudinary.uploader.upload(base64Image, {
-      resource_type: "image",
-    });
-    await prisma.project.update({
-      where: { id: project.id },
-      data: {
-        generatedVideo: uploadedResult.secure_url,
-        isGenerating: false,
-      },
-    });
-    res.status(200).json({
-      projectId: project.id,
+    //remove video file from disk after upload
+    fs.unlinkSync(filepath);
+
+    res.json({
+      message: "Video generated successfully",
+      videoUrl: uploadResult.secure_url,
     });
   } catch (error: any) {
+    //update project status and error message
+    await prisma.project.update({
+      where: { id: projectId, userId },
+      data: {
+        isGenerating: false,
+        error: error.message,
+      },
+    });
+
     if (isCreditDeducted) {
       //add credit back
       await prisma.user.update({
@@ -378,6 +325,10 @@ export const createVideo = async (req: Request, res: Response) => {
 //get all publishedProjects
 export const getAllPublishedProjects = async (req: Request, res: Response) => {
   try {
+    const projects = await prisma.project.findMany({
+      where: { isPublished: true },
+    });
+    res.json(projects);
   } catch (error: any) {
     Sentry.captureException(error);
     res.status(500).json({
@@ -389,6 +340,18 @@ export const getAllPublishedProjects = async (req: Request, res: Response) => {
 //delete projects
 export const deleteProject = async (req: Request, res: Response) => {
   try {
+    const { userId } = req.auth();
+    const projectId = req.params.projectId as string;
+    const project = await prisma.project.findUnique({
+      where: { id: projectId, userId },
+    });
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    await prisma.project.delete({
+      where: { id: projectId },
+    });
+    res.json({ message: "Project deleted successfully" });
   } catch (error: any) {
     Sentry.captureException(error);
     res.status(500).json({
